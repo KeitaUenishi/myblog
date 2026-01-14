@@ -1,0 +1,40 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/layout.astro';
+import FormattedDate from '../components/FormattedDate.astro';
+
+const posts = (await getCollection('blog')).sort(
+	(a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf(),
+).slice(0, 5);
+---
+
+
+<Layout>
+	<section class="mb-8">
+		<h1>Uenishi.Web</h1>
+		<p>
+			大阪に生息しているWebアプリケーション開発者のブログ
+		</p>
+		<p class="text-sm mb-2">
+			1992年9月5日生まれ。 27歳までバンドでギターを弾いていました。
+		</p>
+		<p class="text-sm mb-2">職歴なしの状態から28歳でエンジニアとして就職。</p>
+		<p class="text-sm mb-2">React, TypeScript, Next.jsをメインに使用しWebアプリを開発しています。</p>
+	</section>
+	<section>
+		<ul class="flex flex-wrap gap-8 list-none m-0 p-0">
+			{
+				posts.map((post) => (
+					<li class="w-full mb-4 text-center ">
+						<a href={`/blog/${post.data.id}/`} class="block no-underline transition-[0.2s] group">
+							<h4 class="m-0 text-black leading-tight group-hover:text-accent text-2xl">{post.data.title}</h4>
+							<p class="m-0 text-gray group-hover:text-accent">
+								<FormattedDate date={post.data.publishedAt} />
+							</p>
+						</a>
+					</li>
+				))
+			}
+		</ul>
+	</section>
+</Layout>

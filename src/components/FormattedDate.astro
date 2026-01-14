@@ -1,0 +1,13 @@
+---
+import { formatDate } from '../libs/blog';
+
+interface Props {
+	date: Date;
+}
+
+const { date } = Astro.props;
+---
+
+<time class="text-sm text-zinc-500 font-raleway">
+	{formatDate(date)}
+</time>

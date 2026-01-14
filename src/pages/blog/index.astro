@@ -1,0 +1,29 @@
+---
+import { getCollection } from 'astro:content';
+import FormattedDate from '../../components/FormattedDate.astro';
+import Layout from '../../layouts/layout.astro';
+
+const posts = (await getCollection('blog')).sort(
+	(a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf(),
+);
+---
+
+<Layout>
+	<section>
+		<ul class="flex flex-wrap gap-8 list-none m-0 p-0">
+			{
+				posts.map((post) => (
+					<li class="w-full mb-4 text-center ">
+						<a href={`/blog/${post.data.id}/`} class="block no-underline transition-[0.2s] group">
+							<h4 class="m-0 text-black leading-tight group-hover:text-accent text-2xl">{post.data.title}</h4>
+							<p class="m-0 text-gray group-hover:text-accent">
+								<FormattedDate date={post.data.publishedAt} />
+							</p>
+						</a>
+					</li>
+				))
+			}
+		</ul>
+	</section>
+</Layout>
+
