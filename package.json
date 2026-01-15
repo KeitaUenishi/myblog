@@ -6,7 +6,11 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "biome:check": "biome check .",
+    "biome:fix": "biome check . --write",
+    "biome:fix-unsafe": "biome check . --write --unsafe",
+    "biome:ci": "biome ci ."
   },
   "dependencies": {
     "@astrojs/mdx": "^4.3.13",
@@ -17,5 +21,8 @@
     "sharp": "^0.34.3",
     "sqids": "^0.3.0",
     "tailwindcss": "^4.1.18"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.3.11"
   }
 }
