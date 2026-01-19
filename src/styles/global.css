@@ -45,19 +45,19 @@
     line-height: 1.2;
   }
   h1 {
-    font-size: 3.052em;
+    @apply text-4xl;
   }
   h2 {
-    font-size: 2.441em;
+    @apply text-3xl;
   }
   h3 {
-    font-size: 1.953em;
+    @apply text-2xl;
   }
   h4 {
-    font-size: 1.563em;
+    @apply text-xl;
   }
   h5 {
-    font-size: 1.25em;
+    @apply text-lg;
   }
   strong,
   b {
@@ -104,6 +104,30 @@
   .expressive-code {
     margin-top: 0.5em;
     margin-bottom: 0.5em;
+  }
+
+  /* リストの基本スタイル */
+  ul,
+  ol {
+    padding-left: 1.5rem;
+    margin-bottom: 1.5em;
+  }
+  ul {
+    list-style-type: disc;
+  }
+  ol {
+    list-style-type: decimal;
+  }
+  li {
+    margin-bottom: 0.25em;
+  }
+  /* 入れ子になったリストの余白調整 */
+  ul ul,
+  ul ol,
+  ol ul,
+  ol ol {
+    margin-bottom: 0;
+    margin-top: 0.25em;
   }
 
   @media (max-width: 720px) {

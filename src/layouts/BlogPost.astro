@@ -6,9 +6,13 @@ import Header from "../components/Header.astro";
 
 import FormattedDate from "../components/FormattedDate.astro";
 
-type Props = CollectionEntry<"blog">["data"];
+import type { MarkdownHeading } from "astro";
 
-const { title, description, publishedAt, editedAt } = Astro.props;
+type Props = CollectionEntry<"blog">["data"] & {
+  headings: MarkdownHeading[];
+};
+
+const { title, description, publishedAt, editedAt, headings } = Astro.props;
 ---
 
 <html lang="ja">
@@ -31,9 +35,27 @@ const { title, description, publishedAt, editedAt } = Astro.props;
               )
             }
           </div>
-          <h1 class="text-4xl font-bold mb-4">{title}</h1>
+          <h1 class="mb-4">{title}</h1>
           <hr class="border-gray-light" />
         </div>
+
+        {headings && headings.length > 0 && (
+          <nav class="toc mb-8 p-6 bg-gray-light rounded-lg">
+            <ul class="list-none p-0 m-0">
+              {headings.map((heading) => (
+                <li class="last:mb-0" style={{ paddingLeft: `${(heading.depth - 2) * 1.5}rem` }}>
+                  <a
+                    href={`#${heading.slug}`}
+                    class="text-gray-dark hover:text-accent hover:bg-white px-3 py-1 rounded transition-colors duration-200 block no-underline"
+                  >
+                    {heading.text}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        )}
+
         <div class="prose prose-zinc max-w-none">
           <slot />
         </div>
