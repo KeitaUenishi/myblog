@@ -1,0 +1,113 @@
+---
+interface Props {
+  lastPage: number;
+  paramName?: string;
+}
+
+const { lastPage, paramName = "page" } = Astro.props;
+---
+
+<nav
+	class="flex justify-center items-center gap-6 mt-12 py-8 font-medium"
+	aria-label="Pagination"
+	data-last-page={lastPage}
+	data-param-name={paramName}
+>
+	{
+		lastPage > 1 ? (
+			<a href="/" class="text-gray-light cursor-not-allowed" data-pagination-prev>
+				&larr; 前へ
+			</a>
+		) : (
+			<span class="text-gray-light cursor-not-allowed">
+				&larr; 前へ
+			</span>
+		)
+	}
+
+	<span class="text-gray-dark" data-pagination-label>1 / {lastPage}</span>
+
+	{
+		lastPage > 1 ? (
+			<a href={`/?${paramName}=2`} class="text-accent hover:text-accent-dark transition-colors duration-200" data-pagination-next>
+				次へ &rarr;
+			</a>
+		) : (
+			<span class="text-gray-light cursor-not-allowed">
+				次へ &rarr;
+			</span>
+		)
+	}
+</nav>
+
+<script is:inline>
+  (() => {
+    const script = document.currentScript;
+    if (!script) return;
+
+    const section = script.closest("section[data-page-size][data-last-page]");
+    const root = section ?? document;
+
+    const nav = root.querySelector('nav[aria-label="Pagination"][data-last-page]');
+    if (!nav) return;
+
+    const lastPage = Number(nav.getAttribute("data-last-page") || "1");
+    const paramName = nav.getAttribute("data-param-name") || "page";
+
+    const search = new URLSearchParams(window.location.search);
+    const raw = Number(search.get(paramName) || "1");
+    const currentPage = Number.isFinite(raw) ? Math.min(Math.max(1, raw), lastPage) : 1;
+
+    // 一覧の表示切り替え（存在する場合のみ）
+    const items = root.querySelectorAll("[data-post-list] > li[data-page]");
+    if (items.length > 0) {
+      for (const el of items) {
+        const page = Number(el.getAttribute("data-page") || "1");
+        if (page === currentPage) el.classList.remove("hidden");
+        else el.classList.add("hidden");
+      }
+    }
+
+    const label = nav.querySelector("[data-pagination-label]");
+    if (label) label.textContent = `${currentPage} / ${lastPage}`;
+
+    const prev = nav.querySelector("[data-pagination-prev]");
+    const next = nav.querySelector("[data-pagination-next]");
+
+    const makeUrl = (page) => {
+      if (page <= 1) return "/";
+      const u = new URL(window.location.href);
+      u.searchParams.set(paramName, String(page));
+      return u.pathname + "?" + u.searchParams.toString();
+    };
+
+    if (prev) {
+      if (currentPage > 1) {
+        prev.setAttribute("href", makeUrl(currentPage - 1));
+        prev.className = "text-accent hover:text-accent-dark transition-colors duration-200";
+      } else {
+        prev.removeAttribute("href");
+        prev.className = "text-gray-light cursor-not-allowed";
+      }
+    }
+
+    if (next) {
+      if (currentPage < lastPage) {
+        next.setAttribute("href", makeUrl(currentPage + 1));
+        next.className = "text-accent hover:text-accent-dark transition-colors duration-200";
+      } else {
+        next.removeAttribute("href");
+        next.className = "text-gray-light cursor-not-allowed";
+      }
+    }
+
+    // ?page=1 はURLを正規化（任意）
+    if (currentPage === 1 && search.has(paramName)) {
+      const u = new URL(window.location.href);
+      u.searchParams.delete(paramName);
+      const qs = u.searchParams.toString();
+      window.history.replaceState(null, "", u.pathname + (qs ? `?${qs}` : ""));
+    }
+  })();
+</script>
+

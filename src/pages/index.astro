@@ -1,20 +1,27 @@
 ---
 import { getCollection } from "astro:content";
 import FormattedDate from "../components/FormattedDate.astro";
+import Pagination from "../components/Pagination.astro";
 import Layout from "../layouts/Layout.astro";
 
-const posts = (await getCollection("blog"))
+const PAGE_SIZE = 30;
+
+const allPosts = (await getCollection("blog"))
   .filter((post) => post.data.public === true)
   .sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf());
+
+const lastPage = Math.max(1, Math.ceil(allPosts.length / PAGE_SIZE));
 ---
 
-
 <Layout>
-	<section>
-		<ul class="flex flex-wrap gap-4 list-none m-0 p-0">
+	<section data-page-size={PAGE_SIZE} data-last-page={lastPage}>
+		<ul class="flex flex-wrap gap-4 list-none m-0 p-0" data-post-list>
 			{
-				posts.map((post) => (
-					<li class="w-full mb-2 text-center ">
+				allPosts.map((post, idx) => (
+					<li
+						class={`w-full mb-2 text-center ${idx >= PAGE_SIZE ? "hidden" : ""}`}
+						data-page={Math.floor(idx / PAGE_SIZE) + 1}
+					>
 						<a href={`/blog/${post.data.id}/`} class="block no-underline transition-[0.2s] group">
 							<h4 class="m-0 text-black leading-tight group-hover:text-accent text-xl">{post.data.title}</h4>
 							<p class="m-0 text-gray group-hover:text-accent">
@@ -25,5 +32,6 @@ const posts = (await getCollection("blog"))
 				))
 			}
 		</ul>
+		<Pagination lastPage={lastPage} />
 	</section>
 </Layout>
