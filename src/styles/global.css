@@ -1,5 +1,6 @@
 @import "tailwindcss";
 
+@plugin "@tailwindcss/typography";
 @theme {
   --font-sans: "Atkinson Hyperlegible", sans-serif;
   --font-serif: "Atkinson Hyperlegible", sans-serif;
@@ -34,71 +35,51 @@
     margin: auto;
     padding: 3em 1em;
   }
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    margin: 0 0 0.5rem 0;
-    color: var(--color-black);
-    line-height: 1.2;
-  }
-  h1 {
-    @apply text-4xl;
-  }
-  h2 {
-    @apply text-3xl;
-  }
-  h3 {
-    @apply text-2xl;
-  }
-  h4 {
-    @apply text-xl;
-  }
-  h5 {
-    @apply text-lg;
-  }
-  strong,
-  b {
-    font-weight: 700;
-  }
-  a {
-    color: var(--color-accent);
-  }
-  a:hover {
-    color: var(--color-accent);
-  }
-  p {
-    margin-bottom: 1.5em;
-  }
   textarea {
     width: 100%;
     font-family: var(--font-sans);
   }
-  code {
-    padding: 2px 5px;
-    background-color: var(--color-gray-light);
-    border-radius: 2px;
+}
+
+@utility prose {
+  @apply wrap-break-word;
+
+  & a {
+    @apply text-lime-800 no-underline hover:underline;
   }
-  pre {
-    padding: 1.5em;
-    border-radius: 8px;
+
+  & h2 {
+    @apply pb-1 border-b border-zinc-200;
   }
-  pre > code {
-    all: unset;
+
+  /* code */
+  & code {
+    @apply font-normal text-sm bg-zinc-200 rounded;
+    font-family:
+      SFMono-Regular,
+      Consolas,
+      Liberation Mono,
+      Menlo,
+      monospace;
+    padding: 0.2rem 0.4rem;
+    vertical-align: 0.03em;
   }
-  blockquote {
-    border-left: 4px solid var(--color-accent);
-    padding: 0 0 0 20px;
-    margin: 0px;
-    font-style: italic;
+
+  /* code内で strong/b が使われたら「code + 太字」にする */
+  & code strong,
+  & code b {
+    @apply font-bold;
   }
-  hr {
-    border: none;
-    border-top: 1px solid var(--color-gray-light);
-    margin-top: 1em;
-    margin-bottom: 1em;
+
+  /* @tailwindcss/typography のデフォルトの ` マークを無効化 */
+  & code::before,
+  & code::after {
+    content: "";
+  }
+
+  /* image */
+  & img {
+    @apply border border-zinc-200 rounded-lg;
   }
 
   /* テーブル */
@@ -134,30 +115,6 @@
   .expressive-code {
     margin-top: 0.5em;
     margin-bottom: 0.5em;
-  }
-
-  /* リストの基本スタイル */
-  ul,
-  ol {
-    padding-left: 1.5rem;
-    margin-bottom: 1.5em;
-  }
-  ul {
-    list-style-type: disc;
-  }
-  ol {
-    list-style-type: decimal;
-  }
-  li {
-    margin-bottom: 0.25em;
-  }
-  /* 入れ子になったリストの余白調整 */
-  ul ul,
-  ul ol,
-  ol ul,
-  ol ol {
-    margin-bottom: 0;
-    margin-top: 0.25em;
   }
 
   @media (max-width: 720px) {
