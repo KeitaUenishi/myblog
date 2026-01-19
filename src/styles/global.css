@@ -101,6 +101,36 @@
     margin-bottom: 1em;
   }
 
+  /* テーブル */
+  & :is(table) {
+    /* .prose table と同じ詳細度 (0,2,0) を持つ */
+    @apply block overflow-x-auto; /* スクロール可能に */
+    @apply -mx-6 px-6 my-4; /* コンテナの幅を調整 */
+    width: calc(100% + 3rem); /* content-wrapper から頑張って手計算 */
+    @apply relative; /* シャドウのための位置指定 */
+    @apply pb-1; /* スクロールバーの位置調整 */
+  }
+  /* テーブル: 中身 */
+  & table thead {
+    @apply bg-zinc-50 sticky top-0; /* ヘッダーを固定 */
+  }
+  & table th {
+    @apply px-3 align-middle font-bold text-zinc-700 border border-gray-light whitespace-nowrap;
+  }
+  & table td {
+    @apply px-2 text-zinc-600 border border-gray-light whitespace-nowrap;
+  }
+  /* テーブル: スクロールバーのスタイリング */
+  & table::-webkit-scrollbar {
+    @apply h-1;
+  }
+  & table::-webkit-scrollbar-track {
+    @apply bg-zinc-100;
+  }
+  & table::-webkit-scrollbar-thumb {
+    @apply bg-zinc-300 rounded-full hover:bg-zinc-400;
+  }
+
   .expressive-code {
     margin-top: 0.5em;
     margin-bottom: 0.5em;

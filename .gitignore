@@ -9,6 +9,8 @@ node_modules/
 # obsidian
 .obsidian/
 scripts/
+src/content/blog/_*.md
+src/content/blog/_draft
 
 # logs
 npm-debug.log*
