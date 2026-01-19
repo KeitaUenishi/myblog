@@ -42,72 +42,111 @@ const { lastPage, paramName = "page" } = Astro.props;
 
 <script is:inline>
   (() => {
-    const script = document.currentScript;
-    if (!script) return;
+    const pipe =
+      (...fns) =>
+      (x) =>
+        fns.reduce((v, f) => f(v), x);
 
-    const section = script.closest("section[data-page-size][data-last-page]");
-    const root = section ?? document;
+    const clamp = (min, max) => (n) => Math.min(Math.max(min, n), max);
+    const toNumberOr = (fallback) => (v) => {
+      const n = Number(v);
+      return Number.isFinite(n) ? n : fallback;
+    };
+    const getAttr = (el, name, fallback) => el?.getAttribute?.(name) ?? fallback;
 
-    const nav = root.querySelector('nav[aria-label="Pagination"][data-last-page]');
-    if (!nav) return;
+    const getContext = () => {
+      const script = document.currentScript;
+      if (!script) return null;
 
-    const lastPage = Number(nav.getAttribute("data-last-page") || "1");
-    const paramName = nav.getAttribute("data-param-name") || "page";
+      const section = script.closest("section[data-page-size][data-last-page]");
+      const root = section ?? document;
+      const nav = root.querySelector('nav[aria-label="Pagination"][data-last-page]');
+      if (!nav) return null;
 
-    const search = new URLSearchParams(window.location.search);
-    const raw = Number(search.get(paramName) || "1");
-    const currentPage = Number.isFinite(raw) ? Math.min(Math.max(1, raw), lastPage) : 1;
+      return { script, section, root, nav };
+    };
 
-    // 一覧の表示切り替え（存在する場合のみ）
-    const items = root.querySelectorAll("[data-post-list] > li[data-page]");
-    if (items.length > 0) {
-      for (const el of items) {
-        const page = Number(el.getAttribute("data-page") || "1");
-        if (page === currentPage) el.classList.remove("hidden");
-        else el.classList.add("hidden");
-      }
-    }
+    const readModel = (ctx) => {
+      const lastPage = toNumberOr(1)(getAttr(ctx.nav, "data-last-page", "1"));
+      const paramName = getAttr(ctx.nav, "data-param-name", "page");
 
-    const label = nav.querySelector("[data-pagination-label]");
-    if (label) label.textContent = `${currentPage} / ${lastPage}`;
+      const search = new URLSearchParams(window.location.search);
+      const raw = toNumberOr(1)(search.get(paramName) ?? "1");
+      const currentPage = clamp(1, lastPage)(raw);
 
-    const prev = nav.querySelector("[data-pagination-prev]");
-    const next = nav.querySelector("[data-pagination-next]");
+      return { ...ctx, lastPage, paramName, search, currentPage };
+    };
 
-    const makeUrl = (page) => {
+    const buildUrl = ({ paramName }) => (page) => {
       if (page <= 1) return "/";
       const u = new URL(window.location.href);
       u.searchParams.set(paramName, String(page));
       return u.pathname + "?" + u.searchParams.toString();
     };
 
-    if (prev) {
-      if (currentPage > 1) {
-        prev.setAttribute("href", makeUrl(currentPage - 1));
-        prev.className = "text-accent hover:text-accent-dark transition-colors duration-200";
-      } else {
-        prev.removeAttribute("href");
-        prev.className = "text-gray-light cursor-not-allowed";
-      }
-    }
+    const setText = (el, text) => (el ? (el.textContent = text) : undefined);
+    const setHref = (el, href) => (el ? el.setAttribute("href", href) : undefined);
+    const removeHref = (el) => (el ? el.removeAttribute("href") : undefined);
+    const setClass = (el, className) => (el ? (el.className = className) : undefined);
 
-    if (next) {
-      if (currentPage < lastPage) {
-        next.setAttribute("href", makeUrl(currentPage + 1));
-        next.className = "text-accent hover:text-accent-dark transition-colors duration-200";
-      } else {
-        next.removeAttribute("href");
-        next.className = "text-gray-light cursor-not-allowed";
-      }
-    }
+    const activeLinkClass = "text-accent hover:text-accent-dark transition-colors duration-200";
+    const disabledLinkClass = "text-gray-light cursor-not-allowed";
 
-    // ?page=1 はURLを正規化（任意）
-    if (currentPage === 1 && search.has(paramName)) {
+    const renderList = (m) => {
+      const items = Array.from(m.root.querySelectorAll("[data-post-list] > li[data-page]"));
+      if (items.length === 0) return m;
+
+      items.forEach((el) => {
+        const page = toNumberOr(1)(getAttr(el, "data-page", "1"));
+        el.classList.toggle("hidden", page !== m.currentPage);
+      });
+
+      return m;
+    };
+
+    const renderLabel = (m) => {
+      const label = m.nav.querySelector("[data-pagination-label]");
+      setText(label, `${m.currentPage} / ${m.lastPage}`);
+      return m;
+    };
+
+    const renderLinks = (m) => {
+      const prev = m.nav.querySelector("[data-pagination-prev]");
+      const next = m.nav.querySelector("[data-pagination-next]");
+      const urlOf = buildUrl(m);
+
+      const prevState =
+        m.currentPage > 1
+          ? { href: urlOf(m.currentPage - 1), className: activeLinkClass }
+          : { href: null, className: disabledLinkClass };
+
+      const nextState =
+        m.currentPage < m.lastPage
+          ? { href: urlOf(m.currentPage + 1), className: activeLinkClass }
+          : { href: null, className: disabledLinkClass };
+
+      prevState.href ? setHref(prev, prevState.href) : removeHref(prev);
+      setClass(prev, prevState.className);
+
+      nextState.href ? setHref(next, nextState.href) : removeHref(next);
+      setClass(next, nextState.className);
+
+      return m;
+    };
+
+    const normalizeUrl = (m) => {
+      if (!(m.currentPage === 1 && m.search.has(m.paramName))) return m;
       const u = new URL(window.location.href);
-      u.searchParams.delete(paramName);
+      u.searchParams.delete(m.paramName);
       const qs = u.searchParams.toString();
       window.history.replaceState(null, "", u.pathname + (qs ? `?${qs}` : ""));
-    }
+      return m;
+    };
+
+    const ctx = getContext();
+    if (!ctx) return;
+
+    pipe(readModel, renderList, renderLabel, renderLinks, normalizeUrl)(ctx);
   })();
 </script>
 
