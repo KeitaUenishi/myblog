@@ -3,24 +3,13 @@ import { getCollection } from "astro:content";
 import FormattedDate from "../components/FormattedDate.astro";
 import Layout from "../layouts/Layout.astro";
 
-const posts = (await getCollection("blog"))
-  .sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf())
-  .slice(0, 5);
+const posts = (await getCollection("blog")).sort(
+  (a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf(),
+);
 ---
 
 
 <Layout>
-	<section class="mb-8">
-		<h1>Uenishi.Web</h1>
-		<p>
-			大阪に生息しているWebアプリケーション開発者のブログ
-		</p>
-		<p class="text-sm mb-2">
-			1992年9月5日生まれ。 27歳までバンドでギターを弾いていました。
-		</p>
-		<p class="text-sm mb-2">職歴なしの状態から28歳でエンジニアとして就職。</p>
-		<p class="text-sm mb-2">React, TypeScript, Next.jsをメインに使用しWebアプリを開発しています。</p>
-	</section>
 	<section>
 		<ul class="flex flex-wrap gap-8 list-none m-0 p-0">
 			{

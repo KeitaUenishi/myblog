@@ -1,0 +1,86 @@
+---
+import { Icon } from "astro-icon/components";
+import Layout from "../../layouts/Layout.astro";
+
+const links = [
+  {
+    name: "GitHub",
+    url: "https://github.com/KeitaUenishi",
+    icon: "lucide:github",
+  },
+  {
+    name: "X",
+    url: "https://x.com/uk092908",
+    icon: "lucide:twitter",
+  },
+  {
+    name: "Zenn",
+    url: "https://zenn.dev/uenishi_com",
+    icon: "lucide:book",
+  },
+  {
+    name: "LinkedIn",
+    url: "https://www.linkedin.com/in/keita-uenishi-ab9587232/",
+    icon: "lucide:linkedin",
+  },
+  {
+    name: "Wantedly",
+    url: "https://www.wantedly.com/id/keita_uenishi_0905",
+    icon: "lucide:user",
+  },
+  {
+    name: "Speaker Deck",
+    url: "https://speakerdeck.com/keitauenishi",
+    icon: "lucide:presentation",
+  },
+];
+---
+
+<Layout>
+	<section class="mb-8 p-8 rounded-xl flex flex-col md:flex-row items-center gap-8">
+		<div class="w-32 h-32 shrink-0">
+			<div class="w-full h-full rounded-full border flex items-center justify-center overflow-hidden shadow-xl">
+				<img src="/images/profile.jpeg" alt="Keita Uenishi" class="w-full h-full object-cover">
+			</div>
+		</div>
+		<div class="space-y-4 text-center text-sm md:text-left">
+			<h3 class="text-md">Keita Uenishi</h3>
+			<p class="m-0 leading-relaxed">
+				1992年9月5日生まれ。 27歳までバンドでギターを弾いていました。
+			</p>
+			<p class="m-0 leading-relaxed">
+				職歴なしの状態から28歳でエンジニアとして就職。
+			</p>
+			<p class="m-0 leading-relaxed">
+				React, TypeScript, Next.jsをメインに使用しWebアプリを開発しています。 大阪在住。
+			</p>
+		</div>
+	</section>
+	<section class="mb-12">
+    <h2 class="text-xl font-bold mb-6 pb-1 border-b border-zinc-200">
+      Links
+    </h2>
+    <div class="grid gap-3">
+      {links.map(({ name, url, icon }) => (
+        <a
+          href={url}
+          class="flex items-center gap-3 p-4 border rounded-lg bg-white transition-all hover:shadow-lg group"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <div class="flex items-center justify-center w-10 h-10 rounded-lg bg-zinc-100 transition-colors">
+            <Icon name={icon} size={20} class="text-zinc-600 group-hover:text-zinc-900" />
+          </div>
+          <span class="text-base font-medium text-zinc-800 group-hover:text-zinc-900">
+            {name}
+          </span>
+          <Icon 
+            name="lucide:arrow-up-right" 
+            size={16} 
+            class="ml-auto text-zinc-400 group-hover:text-zinc-600 transition-colors" 
+          />
+        </a>
+      ))}
+    </div>
+  </section>
+</Layout>
