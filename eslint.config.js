@@ -68,6 +68,7 @@ export default [
           },
         },
       ],
+      // MEMO: tailwindcss v4には未対応
       // ...tailwindcss.configs.recommended.rules,
     },
   },
