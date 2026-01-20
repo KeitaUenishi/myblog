@@ -145,71 +145,71 @@ window, self, framesはそれぞれgetterで `[[GlobalThis]]` を返すとある
 
 ![](_images/image%2028.png)
 
-### 補足 Descripterとは？
-
-本題とは逸れるが、先ほど使用した `**getOwnPropertyDescriptor**`** **の指す `Descriptor` が何者なのか、という点について少しだけ掘り下げる。
-
-Descriptorとは、日本語で表すと「記述子」や「特徴を表すもの」という意味になる。
-
-コンピュータの分野では、データや情報を特定するためのラベルや識別子として用いられる。
-
-JavaScriptにおいて何を表しているかについて、まずはECMAScriptの記載を参照してみた。
-
-> The Property Descriptor type is used to explain the manipulation and reification of Object property attributes. A Property Descriptor is a [Record](https://tc39.es/ecma262/#sec-list-and-record-specification-type) with zero or more fields, where each field's name is an attribute name and its value is a corresponding attribute value as specified in [6.1.7.1](https://tc39.es/ecma262/#sec-property-attributes). The schema name used within this specification to tag literal descriptions of Property Descriptor records is “PropertyDescriptor”.
-
-> Property Descriptor values may be further classified as data Property Descriptors and accessor Property Descriptors based upon the existence or use of certain fields. A data Property Descriptor is one that includes any fields named either [[Value]] or [[Writable]]. An accessor Property Descriptor is one that includes any fields named either [[Get]] or [[Set]]. Any Property Descriptor may have fields named [[Enumerable]] and [[Configurable]]. A Property Descriptor value may not be both a data Property Descriptor and an accessor Property Descriptor; however, it may be neither (in which case it is a generic Property Descriptor). A fully populated Property Descriptor is one that is either an accessor Property Descriptor or a data Property Descriptor and that has all of the corresponding fields defined in [Table 3](https://tc39.es/ecma262/#table-object-property-attributes).
-
-そのまま日本語訳
-
-> Property Descriptor タイプは、Object のプロパティ属性の操作と再定義を説明するために使用されます。PropertyDescriptorは、0個以上のフィールドを持つRecordであり、各フィールドの名前は属性名であり、その値は6.1.7.1で規定される対応する属性値である。プロパティ記述子レコードのリテラル記述にタグ付けするために、この仕様内で使用されるスキーマ名は "PropertyDescriptor "である。
-
-> roperty記述子の値は、特定のフィールドの存在または使用に基づいて、データProperty記述子とアクセッサProperty記述子にさらに分類することができる。データ・プロパティ記述子は、[[Value]]または[[Writable]]のいずれかの名前のフィールドを含むものである。アクセッサ・プロパティ記述子は、[[Get]]または[[Set]]のいずれかの名前のフィールドを含むものである。どのProperty Descriptorも、[[Enumerable]]と[[Configurable]]という名前のフィールドを持つことができる。プロパティ記述子の値は、データ・プロパティ記述子とアクセッサ・プロパティ記述子の両方であってはならない。完全に入力されたプロパティ記述子は、アクセッサ・プロパティ記述子またはデータ・プロパティ記述子のいずれかであり、表 3 で定義されている対応するフィールドをすべて持つものである。
-
-[https://tc39.es/ecma262/#sec-property-descriptor-specification-type](https://tc39.es/ecma262/#sec-property-descriptor-specification-type)
-
-Descriptorに何が含まれているのかは、引用にある6.1.7.1 ** Property Attributes**で規定されている通り。
-
-![](_images/image%2029.png)
-
-図で表してみると、こんな感じ。getやsetも、Descriptorの中に含まれている属性（attribute）である。
-
-![](_images/image%2030.png)
-
-普段何気なく使用しているような以下の構文でも、 `obj.test1` とアクセスした際にはvalueの値はgetを経由して取得される。setterも然り。
-
-![](_images/image%2031.png)
-
-このプロパティのDescriptorは `Object.defineProperty` を用いることで設定できる。data propertyとaccessor propertyは共存して記載することはできない（MDNより、以下のようにエラーが表示される）
-
-```javascript
-// （訳注: データとアクセサーの）両方を混在させることはできません。
-Object.defineProperty(o, "conflict", {
-  value: 0x9f91102,
-  get() {
-    return 0xdeadbeef;
-  },
-});
-
-// 出力
-Uncaught TypeError: Invalid property descriptor. Cannot both specify accessors and a value or writable attribute, #<Object>
-    at Object.defineProperty (<anonymous>)
-    at <anonymous>:2:8
-
-```
-
-[https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty#%E3%83%97%E3%83%AD%E3%83%91%E3%83%86%E3%82%A3%E3%81%AE%E4%BD%9C%E6%88%90](https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty#%E3%83%97%E3%83%AD%E3%83%91%E3%83%86%E3%82%A3%E3%81%AE%E4%BD%9C%E6%88%90)
-
-もう少し踏み込んだ詳細については別記事として記載する。
-
-definePropertyの使い所について参考
-
-> この仕組みを利用して、Observable (監視可能) なオブジェクトを作ることができます。
-
-[https://qiita.com/saka_pon/items/42f30cf4983822240398](https://qiita.com/saka_pon/items/42f30cf4983822240398)
-
-> `Object.defineProperty()`を活用すると、**変更を監視するオブジェクト**を作ることもできる
-
-[https://uga-box.hatenablog.com/entry/2025/03/10/000000](https://uga-box.hatenablog.com/entry/2025/03/10/000000)
+> [!note] 補足 Descripterとは？
+> 
+> 本題とは逸れるが、先ほど使用した `**getOwnPropertyDescriptor**`** **の指す `Descriptor` が何者なのか、という点について少しだけ掘り下げる。
+> 
+> Descriptorとは、日本語で表すと「記述子」や「特徴を表すもの」という意味になる。
+> 
+> コンピュータの分野では、データや情報を特定するためのラベルや識別子として用いられる。
+> 
+> JavaScriptにおいて何を表しているかについて、まずはECMAScriptの記載を参照してみた。
+> 
+> > The Property Descriptor type is used to explain the manipulation and reification of Object property attributes. A Property Descriptor is a [Record](https://tc39.es/ecma262/#sec-list-and-record-specification-type) with zero or more fields, where each field's name is an attribute name and its value is a corresponding attribute value as specified in [6.1.7.1](https://tc39.es/ecma262/#sec-property-attributes). The schema name used within this specification to tag literal descriptions of Property Descriptor records is “PropertyDescriptor”.
+> 
+> > Property Descriptor values may be further classified as data Property Descriptors and accessor Property Descriptors based upon the existence or use of certain fields. A data Property Descriptor is one that includes any fields named either [[Value]] or [[Writable]]. An accessor Property Descriptor is one that includes any fields named either [[Get]] or [[Set]]. Any Property Descriptor may have fields named [[Enumerable]] and [[Configurable]]. A Property Descriptor value may not be both a data Property Descriptor and an accessor Property Descriptor; however, it may be neither (in which case it is a generic Property Descriptor). A fully populated Property Descriptor is one that is either an accessor Property Descriptor or a data Property Descriptor and that has all of the corresponding fields defined in [Table 3](https://tc39.es/ecma262/#table-object-property-attributes).
+> 
+> そのまま日本語訳
+> 
+> > Property Descriptor タイプは、Object のプロパティ属性の操作と再定義を説明するために使用されます。PropertyDescriptorは、0個以上のフィールドを持つRecordであり、各フィールドの名前は属性名であり、その値は6.1.7.1で規定される対応する属性値である。プロパティ記述子レコードのリテラル記述にタグ付けするために、この仕様内で使用されるスキーマ名は "PropertyDescriptor "である。
+> 
+> > roperty記述子の値は、特定のフィールドの存在または使用に基づいて、データProperty記述子とアクセッサProperty記述子にさらに分類することができる。データ・プロパティ記述子は、[[Value]]または[[Writable]]のいずれかの名前のフィールドを含むものである。アクセッサ・プロパティ記述子は、[[Get]]または[[Set]]のいずれかの名前のフィールドを含むものである。どのProperty Descriptorも、[[Enumerable]]と[[Configurable]]という名前のフィールドを持つことができる。プロパティ記述子の値は、データ・プロパティ記述子とアクセッサ・プロパティ記述子の両方であってはならない。完全に入力されたプロパティ記述子は、アクセッサ・プロパティ記述子またはデータ・プロパティ記述子のいずれかであり、表 3 で定義されている対応するフィールドをすべて持つものである。
+> 
+> [https://tc39.es/ecma262/#sec-property-descriptor-specification-type](https://tc39.es/ecma262/#sec-property-descriptor-specification-type)
+> 
+> Descriptorに何が含まれているのかは、引用にある6.1.7.1 ** Property Attributes**で規定されている通り。
+> 
+> ![](_images/image%2029.png)
+> 
+> 図で表してみると、こんな感じ。getやsetも、Descriptorの中に含まれている属性（attribute）である。
+> 
+> ![](_images/image%2030.png)
+> 
+> 普段何気なく使用しているような以下の構文でも、 `obj.test1` とアクセスした際にはvalueの値はgetを経由して取得される。setterも然り。
+> 
+> ![](_images/image%2031.png)
+> 
+> このプロパティのDescriptorは `Object.defineProperty` を用いることで設定できる。data propertyとaccessor propertyは共存して記載することはできない（MDNより、以下のようにエラーが表示される）
+> 
+> ```javascript
+> // （訳注: データとアクセサーの）両方を混在させることはできません。
+> Object.defineProperty(o, "conflict", {
+>   value: 0x9f91102,
+>   get() {
+>     return 0xdeadbeef;
+>   },
+> });
+> 
+> // 出力
+> Uncaught TypeError: Invalid property descriptor. Cannot both specify accessors and a value or writable attribute, #<Object>
+>     at Object.defineProperty (<anonymous>)
+>     at <anonymous>:2:8
+> 
+> ```
+> 
+> [https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty#%E3%83%97%E3%83%AD%E3%83%91%E3%83%86%E3%82%A3%E3%81%AE%E4%BD%9C%E6%88%90](https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty#%E3%83%97%E3%83%AD%E3%83%91%E3%83%86%E3%82%A3%E3%81%AE%E4%BD%9C%E6%88%90)
+> 
+> もう少し踏み込んだ詳細については別記事として記載する。
+> 
+> definePropertyの使い所について参考
+> 
+> > この仕組みを利用して、Observable (監視可能) なオブジェクトを作ることができます。
+> 
+> [https://qiita.com/saka_pon/items/42f30cf4983822240398](https://qiita.com/saka_pon/items/42f30cf4983822240398)
+> 
+> > `Object.defineProperty()`を活用すると、**変更を監視するオブジェクト**を作ることもできる
+> 
+> [https://uga-box.hatenablog.com/entry/2025/03/10/000000](https://uga-box.hatenablog.com/entry/2025/03/10/000000)
 
 こちらで確認してみたところ、 `get` 関数内（これがgetter）にはwindowオブジェクトが参照情報として指定されていることが確認できる。また、 `set` はundefinedであるため、windowオブジェクトそのものはread-only関数ということがわかる。
 
