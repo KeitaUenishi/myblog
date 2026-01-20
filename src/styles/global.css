@@ -18,6 +18,9 @@
 }
 
 @layer base {
+  html {
+    font-size: 16px;
+  }
   body {
     font-family: var(--font-sans);
     margin: 0;
@@ -38,6 +41,15 @@
   textarea {
     width: 100%;
     font-family: var(--font-sans);
+  }
+
+  @media (max-width: 768px) {
+    html {
+      font-size: 14px;
+    }
+    main {
+      padding: 4em 1em;
+    }
   }
 }
 
@@ -86,8 +98,7 @@
   & :is(table) {
     /* .prose table と同じ詳細度 (0,2,0) を持つ */
     @apply block overflow-x-auto; /* スクロール可能に */
-    @apply -mx-6 my-4 px-6; /* コンテナの幅を調整 */
-    width: calc(100% + 3rem); /* content-wrapper から頑張って手計算 */
+    @apply my-4; /* コンテナの幅を調整 */
     @apply relative; /* シャドウのための位置指定 */
     @apply pb-1; /* スクロールバーの位置調整 */
   }
@@ -142,7 +153,7 @@
   }
 
   details.callout > :not(summary) {
-    @apply px-4 py-0;
+    @apply mx-4 py-0;
   }
 
   details.callout > summary + * {
@@ -187,24 +198,4 @@
   details.callout-quote, details.callout-cite { @apply border-zinc-300 bg-zinc-50/50; }
   details.callout-quote summary.callout-title, details.callout-cite summary.callout-title { @apply bg-zinc-200/50 text-zinc-900; }
 
-  @media (max-width: 720px) {
-    body {
-      font-size: 18px;
-    }
-    main {
-      padding: 1em;
-    }
-  }
-
-  .sr-only {
-    border: 0;
-    padding: 0;
-    margin: 0;
-    position: absolute;
-    height: 1px;
-    width: 1px;
-    overflow: hidden;
-    clip: rect(1px 1px 1px 1px);
-    white-space: nowrap;
-  }
 }
