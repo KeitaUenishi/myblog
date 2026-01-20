@@ -1,5 +1,6 @@
 ---
 import { getCollection } from "astro:content";
+
 import FormattedDate from "../components/FormattedDate.astro";
 import Pagination from "../components/Pagination.astro";
 import Layout from "../layouts/Layout.astro";
@@ -14,24 +15,29 @@ const lastPage = Math.max(1, Math.ceil(allPosts.length / PAGE_SIZE));
 ---
 
 <Layout>
-	<section data-page-size={PAGE_SIZE} data-last-page={lastPage}>
-		<ul class="flex flex-wrap gap-4 list-none m-0 p-0" data-post-list>
-			{
-				allPosts.map((post, idx) => (
-					<li
-						class={`w-full mb-2 text-center ${idx >= PAGE_SIZE ? "hidden" : ""}`}
-						data-page={Math.floor(idx / PAGE_SIZE) + 1}
-					>
-						<a href={`/blog/${post.data.id}/`} class="block no-underline transition-[0.2s] group">
-							<h4 class="m-0 text-black leading-tight group-hover:text-accent text-xl">{post.data.title}</h4>
-							<p class="m-0 text-gray group-hover:text-accent">
-								<FormattedDate date={post.data.publishedAt} />
-							</p>
-						</a>
-					</li>
-				))
-			}
-		</ul>
-		<Pagination lastPage={lastPage} />
-	</section>
+  <section data-page-size={PAGE_SIZE} data-last-page={lastPage}>
+    <ul class="m-0 flex list-none flex-wrap gap-4 p-0" data-post-list>
+      {
+        allPosts.map((post, idx) => (
+          <li
+            class={`mb-2 w-full text-center ${idx >= PAGE_SIZE ? "hidden" : ""}`}
+            data-page={Math.floor(idx / PAGE_SIZE) + 1}
+          >
+            <a
+              href={`/blog/${post.data.id}/`}
+              class="group block no-underline transition-[0.2s]"
+            >
+              <h4 class="group-hover:text-accent m-0 text-xl leading-tight text-black">
+                {post.data.title}
+              </h4>
+              <p class="text-gray group-hover:text-accent m-0">
+                <FormattedDate date={post.data.publishedAt} />
+              </p>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <Pagination lastPage={lastPage} />
+  </section>
 </Layout>

@@ -8,36 +8,40 @@ const { lastPage, paramName = "page" } = Astro.props;
 ---
 
 <nav
-	class="flex justify-center items-center gap-6 mt-12 py-8 font-medium"
-	aria-label="Pagination"
-	data-last-page={lastPage}
-	data-param-name={paramName}
+  class="mt-12 flex items-center justify-center gap-6 py-8 font-medium"
+  aria-label="Pagination"
+  data-last-page={lastPage}
+  data-param-name={paramName}
 >
-	{
-		lastPage > 1 ? (
-			<a href="/" class="text-gray-light cursor-not-allowed" data-pagination-prev>
-				&larr; 前へ
-			</a>
-		) : (
-			<span class="text-gray-light cursor-not-allowed">
-				&larr; 前へ
-			</span>
-		)
-	}
+  {
+    lastPage > 1 ? (
+      <a
+        href="/"
+        class="text-gray-light cursor-not-allowed"
+        data-pagination-prev
+      >
+        &larr; 前へ
+      </a>
+    ) : (
+      <span class="text-gray-light cursor-not-allowed">&larr; 前へ</span>
+    )
+  }
 
-	<span class="text-gray-dark" data-pagination-label>1 / {lastPage}</span>
+  <span class="text-gray-dark" data-pagination-label>1 / {lastPage}</span>
 
-	{
-		lastPage > 1 ? (
-			<a href={`/?${paramName}=2`} class="text-accent hover:text-accent-dark transition-colors duration-200" data-pagination-next>
-				次へ &rarr;
-			</a>
-		) : (
-			<span class="text-gray-light cursor-not-allowed">
-				次へ &rarr;
-			</span>
-		)
-	}
+  {
+    lastPage > 1 ? (
+      <a
+        href={`/?${paramName}=2`}
+        class="text-accent hover:text-accent-dark transition-colors duration-200"
+        data-pagination-next
+      >
+        次へ &rarr;
+      </a>
+    ) : (
+      <span class="text-gray-light cursor-not-allowed">次へ &rarr;</span>
+    )
+  }
 </nav>
 
 <script is:inline>
@@ -52,7 +56,8 @@ const { lastPage, paramName = "page" } = Astro.props;
       const n = Number(v);
       return Number.isFinite(n) ? n : fallback;
     };
-    const getAttr = (el, name, fallback) => el?.getAttribute?.(name) ?? fallback;
+    const getAttr = (el, name, fallback) =>
+      el?.getAttribute?.(name) ?? fallback;
 
     const getContext = () => {
       const script = document.currentScript;
@@ -60,7 +65,9 @@ const { lastPage, paramName = "page" } = Astro.props;
 
       const section = script.closest("section[data-page-size][data-last-page]");
       const root = section ?? document;
-      const nav = root.querySelector('nav[aria-label="Pagination"][data-last-page]');
+      const nav = root.querySelector(
+        'nav[aria-label="Pagination"][data-last-page]',
+      );
       if (!nav) return null;
 
       return { script, section, root, nav };
@@ -77,23 +84,30 @@ const { lastPage, paramName = "page" } = Astro.props;
       return { ...ctx, lastPage, paramName, search, currentPage };
     };
 
-    const buildUrl = ({ paramName }) => (page) => {
-      if (page <= 1) return "/";
-      const u = new URL(window.location.href);
-      u.searchParams.set(paramName, String(page));
-      return u.pathname + "?" + u.searchParams.toString();
-    };
+    const buildUrl =
+      ({ paramName }) =>
+      (page) => {
+        if (page <= 1) return "/";
+        const u = new URL(window.location.href);
+        u.searchParams.set(paramName, String(page));
+        return u.pathname + "?" + u.searchParams.toString();
+      };
 
     const setText = (el, text) => (el ? (el.textContent = text) : undefined);
-    const setHref = (el, href) => (el ? el.setAttribute("href", href) : undefined);
+    const setHref = (el, href) =>
+      el ? el.setAttribute("href", href) : undefined;
     const removeHref = (el) => (el ? el.removeAttribute("href") : undefined);
-    const setClass = (el, className) => (el ? (el.className = className) : undefined);
+    const setClass = (el, className) =>
+      el ? (el.className = className) : undefined;
 
-    const activeLinkClass = "text-accent hover:text-accent-dark transition-colors duration-200";
+    const activeLinkClass =
+      "text-accent hover:text-accent-dark transition-colors duration-200";
     const disabledLinkClass = "text-gray-light cursor-not-allowed";
 
     const renderList = (m) => {
-      const items = Array.from(m.root.querySelectorAll("[data-post-list] > li[data-page]"));
+      const items = Array.from(
+        m.root.querySelectorAll("[data-post-list] > li[data-page]"),
+      );
       if (items.length === 0) return m;
 
       items.forEach((el) => {
@@ -125,10 +139,18 @@ const { lastPage, paramName = "page" } = Astro.props;
           ? { href: urlOf(m.currentPage + 1), className: activeLinkClass }
           : { href: null, className: disabledLinkClass };
 
-      prevState.href ? setHref(prev, prevState.href) : removeHref(prev);
+      if (prevState.href) {
+        setHref(prev, prevState.href);
+      } else {
+        removeHref(prev);
+      }
       setClass(prev, prevState.className);
 
-      nextState.href ? setHref(next, nextState.href) : removeHref(next);
+      if (nextState.href) {
+        setHref(next, nextState.href);
+      } else {
+        removeHref(next);
+      }
       setClass(next, nextState.className);
 
       return m;
@@ -149,4 +171,3 @@ const { lastPage, paramName = "page" } = Astro.props;
     pipe(readModel, renderList, renderLabel, renderLinks, normalizeUrl)(ctx);
   })();
 </script>
-

@@ -90,7 +90,7 @@ function splitByBoldMarkers(input: string): HastNode[] | null {
   let matched = false;
 
   // Biome: avoid assignments in expressions
-  // eslint-disable-next-line no-constant-condition
+
   while (true) {
     const m = re.exec(input);
     if (!m) break;

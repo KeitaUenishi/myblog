@@ -3,16 +3,16 @@ import { SITE_TITLE } from "../consts";
 import HeaderLink from "./HeaderLink.astro";
 ---
 
-<header class="m-0 bg-gray-light">
-	<nav class="flex items-center justify-between max-w-3xl mx-auto px-4">
-		<h2 class="text-lg m-0"><a href="/" class="no-underline text-black font-bold tracking-tight">{SITE_TITLE}</a></h2>
-		<div class="flex items-center">
-			<HeaderLink href="/">Home</HeaderLink>
-			<HeaderLink href="/about">About</HeaderLink>
-		</div>
-	</nav>
+<header class="bg-gray-light m-0">
+  <nav class="mx-auto flex max-w-3xl items-center justify-between px-4">
+    <h2 class="m-0 text-lg">
+      <a href="/" class="font-bold tracking-tight text-black no-underline"
+        >{SITE_TITLE}</a
+      >
+    </h2>
+    <div class="flex items-center">
+      <HeaderLink href="/">Home</HeaderLink>
+      <HeaderLink href="/about">About</HeaderLink>
+    </div>
+  </nav>
 </header>
-
-
-
-

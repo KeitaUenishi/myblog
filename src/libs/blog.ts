@@ -1,7 +1,8 @@
 // src/lib/note.ts
 
-import type { CollectionEntry } from "astro:content";
 import { getCollection } from "astro:content";
+
+import type { CollectionEntry } from "astro:content";
 
 export async function getAllPublicBlogs(): Promise<CollectionEntry<"blog">[]> {
   const notes = await getCollection("blog", ({ data }) => {
