@@ -117,6 +117,76 @@
     margin-bottom: 0.5em;
   }
 
+  /* Callouts */
+  details.callout {
+    @apply my-4 rounded-lg border border-zinc-200 bg-zinc-50 overflow-hidden;
+  }
+
+  details.callout summary.callout-title {
+    @apply cursor-pointer list-none bg-zinc-100 px-4 py-2 font-bold hover:bg-zinc-200 transition-colors;
+    display: flex;
+    align-items: center;
+  }
+
+  details.callout summary.callout-title::before {
+    content: "▶";
+    @apply mr-2 text-[0.7em] transition-transform duration-200;
+  }
+
+  details[open].callout summary.callout-title::before {
+    @apply rotate-90;
+  }
+
+  details.callout summary.callout-title::-webkit-details-marker {
+    display: none;
+  }
+
+  details.callout > :not(summary) {
+    @apply px-4 py-0;
+  }
+
+  details.callout > summary + * {
+    @apply mt-3;
+  }
+
+  details.callout > *:last-child {
+    @apply mb-3;
+  }
+
+  /* Callout types */
+  details.callout-note { @apply border-blue-200 bg-blue-50/50; }
+  details.callout-note summary.callout-title { @apply bg-blue-100/50 text-blue-900; }
+
+  details.callout-info { @apply border-sky-200 bg-sky-50/50; }
+  details.callout-info summary.callout-title { @apply bg-sky-100/50 text-sky-900; }
+
+  details.callout-todo { @apply border-blue-200 bg-blue-50/50; }
+  details.callout-todo summary.callout-title { @apply bg-blue-100/50 text-blue-900; }
+
+  details.callout-tip, details.callout-hint, details.callout-important { @apply border-emerald-200 bg-emerald-50/50; }
+  details.callout-tip summary.callout-title, details.callout-hint summary.callout-title, details.callout-important summary.callout-title { @apply bg-emerald-100/50 text-emerald-900; }
+
+  details.callout-success, details.callout-check, details.callout-done { @apply border-green-200 bg-green-50/50; }
+  details.callout-success summary.callout-title, details.callout-check summary.callout-title, details.callout-done summary.callout-title { @apply bg-green-100/50 text-green-900; }
+
+  details.callout-warning, details.callout-caution, details.callout-attention { @apply border-amber-200 bg-amber-50/50; }
+  details.callout-warning summary.callout-title, details.callout-caution summary.callout-title, details.callout-attention summary.callout-title { @apply bg-amber-100/50 text-amber-900; }
+
+  details.callout-failure, details.callout-fail, details.callout-missing { @apply border-rose-200 bg-rose-50/50; }
+  details.callout-failure summary.callout-title, details.callout-fail summary.callout-title, details.callout-missing summary.callout-title { @apply bg-rose-100/50 text-rose-900; }
+
+  details.callout-danger, details.callout-error { @apply border-red-200 bg-red-50/50; }
+  details.callout-danger summary.callout-title, details.callout-error summary.callout-title { @apply bg-red-100/50 text-red-900; }
+
+  details.callout-bug { @apply border-rose-200 bg-rose-50/50; }
+  details.callout-bug summary.callout-title { @apply bg-rose-100/50 text-rose-900; }
+
+  details.callout-example { @apply border-purple-200 bg-purple-50/50; }
+  details.callout-example summary.callout-title { @apply bg-purple-100/50 text-purple-900; }
+
+  details.callout-quote, details.callout-cite { @apply border-zinc-300 bg-zinc-50/50; }
+  details.callout-quote summary.callout-title, details.callout-cite summary.callout-title { @apply bg-zinc-200/50 text-zinc-900; }
+
   @media (max-width: 720px) {
     body {
       font-size: 18px;
