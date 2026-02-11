@@ -4,7 +4,7 @@ id: jhxg3yo
 public: true
 publishedAt: 2026-02-11
 editedAt:
-description:
+description: "BigQueryで大量のデータを効率的かつ安価に扱うための「パーティショニング」と「クラスタリング」の概要、メリット、使い分けのポイントについて解説します。"
 tags:
   - GCP
 ---
