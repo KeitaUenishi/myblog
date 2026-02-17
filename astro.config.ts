@@ -8,6 +8,7 @@ import icon from "astro-icon";
 import rehypeInlineCodeStrong from "./src/libs/rehypeInlineCodeStrong";
 import rehypeRemoveDetailsOpen from "./src/libs/rehypeRemoveDetailsOpen";
 import remarkCallout from "./src/libs/remarkCallout";
+import remarkMermaid from "./src/libs/remarkMermaid";
 
 // https://astro.build/config
 export default defineConfig({
@@ -15,7 +16,7 @@ export default defineConfig({
   integrations: [expressiveCode(), mdx(), sitemap(), icon()],
 
   markdown: {
-    remarkPlugins: [remarkCallout],
+    remarkPlugins: [remarkMermaid, remarkCallout],
     rehypePlugins: [rehypeInlineCodeStrong, rehypeRemoveDetailsOpen],
   },
 
