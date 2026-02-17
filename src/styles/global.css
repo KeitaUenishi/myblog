@@ -198,4 +198,9 @@
   details.callout-quote, details.callout-cite { @apply border-zinc-300 bg-zinc-50/50; }
   details.callout-quote summary.callout-title, details.callout-cite summary.callout-title { @apply bg-zinc-200/50 text-zinc-900; }
 
+  /* Mermaid */
+  pre.mermaid {
+    @apply my-4 flex justify-center rounded-lg border border-zinc-200 bg-white p-4;
+  }
+
 }
