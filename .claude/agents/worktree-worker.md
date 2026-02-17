@@ -13,9 +13,9 @@ git worktree内で独立したブランチを作成し、タスクを実行し�
 3. タスクの内容を理解し、対象ファイルを読んで既存コードを把握する
 4. 実装・修正を行う
 5. 必要に応じて検証する:
-   - テスト作成/修正時: `pnpm run test -- --testPathPattern={テストファイル名}` で全パスを確認
-   - コード変更時: `pnpm run typecheck` で型エラーがないことを確認
-6. `pnpm run biome:check:write` でフォーマットを整える
+   - テスト作成/修正時: `npm run test -- --testPathPattern={テストファイル名}` で全パスを確認
+   - コード変更時: `npm run typecheck` で型エラーがないことを確認
+6. `npm run biome:check:write` でフォーマットを整える
 7. コミットする（Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com> を含める）
 8. `git push -u origin {branch}` でプッシュする
 9. `gh pr create --base develop` でPRを作成する
