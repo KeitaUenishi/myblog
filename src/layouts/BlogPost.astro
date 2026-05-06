@@ -68,7 +68,18 @@ const { title, description, publishedAt, editedAt, headings } = Astro.props;
     <Footer />
     <script is:inline type="module">
       import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
-      mermaid.initialize({ startOnLoad: true });
+
+      for (const pre of document.querySelectorAll("pre.mermaid[data-mermaid-b64]")) {
+        const b64 = pre.getAttribute("data-mermaid-b64");
+        if (!b64) continue;
+        pre.textContent = new TextDecoder().decode(
+          Uint8Array.from(atob(b64), (c) => c.charCodeAt(0)),
+        );
+        pre.removeAttribute("data-mermaid-b64");
+      }
+
+      mermaid.initialize({ startOnLoad: false });
+      await mermaid.run();
     </script>
   </body>
 </html>
