@@ -2,6 +2,7 @@ node_modules/
 .astro/
 dist/
 package-lock.json
+public/pagefind/
 
 .vscode/
 src/content/blog/
