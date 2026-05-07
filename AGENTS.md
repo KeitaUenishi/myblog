@@ -5,6 +5,7 @@
 ## 必須ルール
 
 ### Worktree必須
+
 コード変更を伴う作業は、**必ず git worktree を作成してから開始すること**。メインのリポジトリディレクトリでは直接コード変更を行わない。
 
 ```bash
@@ -17,6 +18,7 @@ cp .claude/settings.local.json ../myblog-<branch-name>/.claude/
 ```
 
 ### データ
+
 blogの記事は `src/content/blog` に格納されている。このコンテンツはソースコードを編集する際には一切編集しないこと。
 静的ビルドによってこのコンテンツを読み取ります。
 
@@ -37,6 +39,11 @@ npm run format:fix # Prettier自動フォーマット
 - **スタイリング**: Tailwind CSS v4
 - **言語**: TypeScript (strict)
 - **リンター/フォーマッター**: ESLint / Prettier
+- **全文検索**: [Pagefind](https://pagefind.app/) (`npm run build` 内で `pagefind --site dist` を実行してインデックスを生成)
+
+### 検索インデックスの取り扱い
+
+`/pagefind/*` は `npm run build` 後に `dist/pagefind/` 配下へ生成されます。`npm run dev` ではインデックスが存在しないため、検索 UI はクエリを入力してもヒットしません。動作確認は `npm run build && npm run preview` で行ってください。
 
 ## 主要ディレクトリ構造
 

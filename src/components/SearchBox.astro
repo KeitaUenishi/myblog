@@ -1,0 +1,23 @@
+---
+import { Icon } from "astro-icon/components";
+---
+
+<div class="mb-8">
+  <label class="bg-gray-light relative block rounded-lg">
+    <span class="sr-only">記事の検索</span>
+    <input
+      type="search"
+      placeholder="記事の検索"
+      class="placeholder:text-gray w-full rounded-lg border-0 bg-transparent px-4 py-3 pr-12 text-base focus:outline-none"
+      data-search-input
+      autocomplete="off"
+      enterkeyhint="search"
+    />
+    <Icon
+      name="lucide:search"
+      class="text-gray pointer-events-none absolute top-1/2 right-4 -translate-y-1/2"
+      size={20}
+      aria-hidden="true"
+    />
+  </label>
+</div>

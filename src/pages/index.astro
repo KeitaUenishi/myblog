@@ -3,6 +3,7 @@ import { getCollection } from "astro:content";
 
 import FormattedDate from "../components/FormattedDate.astro";
 import Pagination from "../components/Pagination.astro";
+import SearchBox from "../components/SearchBox.astro";
 import Layout from "../layouts/Layout.astro";
 
 const PAGE_SIZE = 30;
@@ -15,6 +16,9 @@ const lastPage = Math.max(1, Math.ceil(allPosts.length / PAGE_SIZE));
 ---
 
 <Layout>
+  <div class="px-4 pt-6">
+    <SearchBox />
+  </div>
   <section data-page-size={PAGE_SIZE} data-last-page={lastPage}>
     <ul class="m-0 flex list-none flex-wrap gap-4 p-0" data-post-list>
       {
@@ -38,6 +42,138 @@ const lastPage = Math.max(1, Math.ceil(allPosts.length / PAGE_SIZE));
         ))
       }
     </ul>
+    <ul class="m-0 hidden list-none flex-wrap gap-4 p-0" data-search-results>
+    </ul>
+    <p class="text-gray hidden py-8 text-center" data-search-empty>
+      該当する記事は見つかりませんでした。
+    </p>
     <Pagination lastPage={lastPage} />
   </section>
 </Layout>
+
+<script is:inline>
+  (() => {
+    const input = document.querySelector("[data-search-input]");
+    const section = document.querySelector("section[data-page-size]");
+    const postList = section?.querySelector("[data-post-list]");
+    const resultsList = section?.querySelector("[data-search-results]");
+    const emptyMsg = section?.querySelector("[data-search-empty]");
+    const pagination = section?.querySelector('nav[aria-label="Pagination"]');
+
+    if (!input || !section || !postList || !resultsList) return;
+
+    const escapeHtml = (s) =>
+      String(s).replace(
+        /[&<>"']/g,
+        (c) =>
+          ({
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#39;",
+          })[c],
+      );
+
+    const formatDate = (iso) => {
+      if (!iso) return "";
+      const [y, m, d] = iso.split("-");
+      if (!y || !m || !d) return iso;
+      return `${y}年${Number(m)}月${Number(d)}日`;
+    };
+
+    const restoreList = () => {
+      resultsList.innerHTML = "";
+      resultsList.classList.add("hidden");
+      resultsList.classList.remove("flex");
+      emptyMsg?.classList.add("hidden");
+      postList.classList.remove("hidden");
+      pagination?.classList.remove("hidden");
+    };
+
+    const showResults = () => {
+      postList.classList.add("hidden");
+      pagination?.classList.add("hidden");
+      resultsList.classList.remove("hidden");
+      resultsList.classList.add("flex");
+    };
+
+    const renderResults = (results) => {
+      if (results.length === 0) {
+        resultsList.innerHTML = "";
+        emptyMsg?.classList.remove("hidden");
+        return;
+      }
+      emptyMsg?.classList.add("hidden");
+      resultsList.innerHTML = results
+        .map((r) => {
+          const title = escapeHtml(r.meta?.title ?? "(無題)");
+          const date = formatDate(r.meta?.date);
+          const url = r.url.replace(/index\.html$/, "");
+          const excerpt = r.excerpt ?? "";
+          const dateLine = date
+            ? `<p class="text-gray group-hover:text-accent m-0">${date}</p>`
+            : "";
+          return `
+            <li class="mb-2 w-full text-center">
+              <a href="${url}" class="group block no-underline transition-[0.2s]">
+                <h4 class="group-hover:text-accent m-0 text-xl leading-tight text-black">${title}</h4>
+                ${dateLine}
+                <p class="text-gray mt-1 line-clamp-2 text-sm">${excerpt}</p>
+              </a>
+            </li>
+          `;
+        })
+        .join("");
+    };
+
+    let pagefindPromise = null;
+    const loadPagefind = () => {
+      if (!pagefindPromise) {
+        pagefindPromise = import("/pagefind/pagefind.js")
+          .then((m) => {
+            m.init?.();
+            return m;
+          })
+          .catch((err) => {
+            console.warn("[search] Pagefind unavailable:", err);
+            return null;
+          });
+      }
+      return pagefindPromise;
+    };
+
+    let lastQuery = "";
+    const runSearch = async () => {
+      const q = input.value.trim();
+      if (q === lastQuery) return;
+      lastQuery = q;
+
+      if (!q) {
+        restoreList();
+        return;
+      }
+
+      const pagefind = await loadPagefind();
+      if (!pagefind) return;
+      if (q !== input.value.trim()) return;
+
+      const search = await pagefind.search(q);
+      if (q !== input.value.trim()) return;
+
+      const data = await Promise.all(
+        search.results.slice(0, 30).map((r) => r.data()),
+      );
+      if (q !== input.value.trim()) return;
+
+      showResults();
+      renderResults(data);
+    };
+
+    let timer;
+    input.addEventListener("input", () => {
+      clearTimeout(timer);
+      timer = setTimeout(runSearch, 200);
+    });
+  })();
+</script>
