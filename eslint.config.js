@@ -13,6 +13,7 @@ export default [
       ".astro/**",
       "dist/**",
       "node_modules/**",
+      "public/pagefind/**",
       "src/content/blog/**",
       "src/scripts/**",
     ],
