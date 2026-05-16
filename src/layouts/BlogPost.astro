@@ -11,7 +11,10 @@ type Props = CollectionEntry<"blog">["data"] & {
   headings: MarkdownHeading[];
 };
 
-const { title, description, publishedAt, editedAt, headings } = Astro.props;
+const { title, description, publishedAt, editedAt, headings, tags } =
+  Astro.props;
+
+const publishedAtIso = publishedAt.toISOString().slice(0, 10);
 ---
 
 <html lang="ja">
@@ -22,7 +25,7 @@ const { title, description, publishedAt, editedAt, headings } = Astro.props;
   <body class="bg-white">
     <Header />
     <main class="mx-auto max-w-3xl px-4 py-12">
-      <article>
+      <article data-pagefind-body>
         <div class="mb-8 text-center">
           <div class="text-gray mb-2">
             <FormattedDate date={publishedAt} />
@@ -34,13 +37,25 @@ const { title, description, publishedAt, editedAt, headings } = Astro.props;
               )
             }
           </div>
-          <h1 class="mb-4 text-3xl font-bold">{title}</h1>
+          <h1 class="mb-4 text-3xl font-bold" data-pagefind-meta="title">
+            {title}
+          </h1>
           <hr class="border-gray-light" />
         </div>
 
+        <span data-pagefind-meta={`date:${publishedAtIso}`} hidden></span>
+        {
+          tags && tags.length > 0 && (
+            <span data-pagefind-meta={`tags:${tags.join(",")}`} hidden />
+          )
+        }
+
         {
           headings && headings.length > 0 && (
-            <nav class="toc bg-gray-light mb-8 rounded-lg p-6">
+            <nav
+              class="toc bg-gray-light mb-8 rounded-lg p-6"
+              data-pagefind-ignore
+            >
               <ul class="m-0 list-none p-0">
                 {headings.map((heading) => (
                   <li
@@ -69,7 +84,9 @@ const { title, description, publishedAt, editedAt, headings } = Astro.props;
     <script is:inline type="module">
       import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
 
-      for (const pre of document.querySelectorAll("pre.mermaid[data-mermaid-b64]")) {
+      for (const pre of document.querySelectorAll(
+        "pre.mermaid[data-mermaid-b64]",
+      )) {
         const b64 = pre.getAttribute("data-mermaid-b64");
         if (!b64) continue;
         pre.textContent = new TextDecoder().decode(
